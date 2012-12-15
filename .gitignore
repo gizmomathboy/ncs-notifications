@@ -1,0 +1,4 @@
+settings/development.py
+settings/production.py
+*.pyc
+venv
