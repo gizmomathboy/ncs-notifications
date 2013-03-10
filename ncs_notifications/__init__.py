@@ -1,7 +1,7 @@
-from flask import Flask
+from flask import Flask, request
 from postmonkey import PostMonkey
 from mandrill import Mandrill
-from pprint import pprint
+from pprint import pformat
 import datetime
 
 
@@ -9,13 +9,46 @@ print __name__
 app = Flask(__name__)
 
 
-@app.route('/poop')
+@app.route('/')
 def home():
-    return('poop')
+    return('hello there')
+
+
+@app.route('/sendabunch', methods=['POST'])
+def sendabunch():
+    md = Mandrill(app.config['MD_API_KEY'])
+
+    email = request.form['email']
+    count = request.form.get('count', 1)
+    msg_text = "Hello, test user!\n\nThis was sent on %s\n" % datetime.datetime.now()
+
+    for n in range(0, count):
+        message = {
+            "text": msg_text,
+            "subject": "Sendabunch Test Emails",
+            "from_email": app.config['DEFAULT_FROM_EMAIL'],
+            "from_name": app.config['DEFAULT_FROM_NAME'],
+            "to": [{
+                "email": email
+            }]
+        }
+
+        app.logger.debug("sending to %s" % (email))
+
+        resp = md.messages.send(message)
+
+        app.logger.debug(pformat(resp))
+
+    return('done sent')
 
 
 @app.route('/emailme')
 def emailme():
+
+    """
+    sends emails to a configured MailChimp list
+    """
+
     pm = PostMonkey(app.config['PM_API_KEY'])
     md = Mandrill(app.config['MD_API_KEY'])
 
@@ -30,18 +63,18 @@ def emailme():
     for email in emails:
         message = {
             "html": msg_html,
-            "subject": "NCS updates",
-            "from_email": "webmaster@ncs.k12.in.us",
-            "from_name": "NCS Webmaster",
+            "subject": "List sends test",
+            "from_email": app.config['DEFAULT_FROM_EMAIL'],
+            "from_name": app.config['DEFAULT_FROM_NAME'],
             "to": [{
                 "email": email
             }]
         }
 
-        print "sending to %s" % (email)
+        app.logger.debug("sending to %s" % (email))
 
         resp = md.messages.send(message)
 
-        print pprint(resp)
+        app.logger.debug(pformat(resp))
 
     return(', '.join(emails))
