@@ -4,6 +4,13 @@
 class Config(object):
     DEBUG = True
 
+    ##
+    # make this something CRAY CRAY like:
+    # >>> import os
+    # >>> os.urandom(36)
+    ##
+    SECRET_KEY = "this is a secret"
+
     AUTH_USERNAME = "A_USERNAME"
     AUTH_PASSWORD = "A_COMPLEX_PASSWORD"  # yes, this is plain text.
 
