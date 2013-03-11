@@ -1,2 +1,0 @@
-# Example configuration
-DEBUG = False

@@ -8,6 +8,9 @@ import datetime
 print __name__
 app = Flask(__name__)
 
+# Configuration
+app.config.from_object('settings.config.Config')
+
 
 @app.route('/')
 def home():
