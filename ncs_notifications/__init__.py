@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from postmonkey import PostMonkey
 from mandrill import Mandrill
 from pprint import pformat
@@ -14,7 +14,7 @@ app.config.from_object('settings.config.Config')
 
 @app.route('/')
 def home():
-    return('hello there')
+    return render_template('index.html')
 
 
 @app.route('/sendabunch', methods=['POST'])

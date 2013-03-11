@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>{% block page_title %}Layout Default{% endblock %}</title>
+
+	<link rel="stylesheet" href="/static/css/normalize.css" />
+
+	<link rel="stylesheet" href="/static/css/foundation.css" />
+
+
+	<script src="/static/js/vendor/custom.modernizr.js"></script>
+
+	{% block custom_header %}{% endblock %}
+
+</head>
+<body>
+
+	{% block body %}<h1>The Body</h1>{% endblock %}
+
+	<script>
+	document.write('<script src=' +
+	('__proto__' in {} ? '/static/js/vendor/zepto' : '/static/js/vendor/jquery') +
+	'.js><\/script>')
+	</script>
+
+	<script src="/static/js/foundation.min.js"></script>
+
+	<script>
+	$(document).foundation();
+	</script>
+
+	{% block body_footer %}{% endblock %}
+</body>
+</html>
