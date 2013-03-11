@@ -1,5 +1,6 @@
 settings/development.py
 settings/production.py
+settings/config.py
 venv
 
 *.py[cod]
