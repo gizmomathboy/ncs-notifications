@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block body %}
+	<div class="row">
+		<div class="large-12 columns">
+			<form action="/review" method="POST">
+				<div class="row">
+					<div class="large-1 columns">
+						<label class="right inline">Name</label>
+					</div>
+					<div class="large-11 columns">
+						<input name="from_name" type="text" value="{{ default_from_name }}">
+					</div>
+				</div>
+				<div class="row">
+					<div class="large-1 columns">
+						<label class="right inline">E-mail</label>
+					</div>
+					<div class="large-11 columns">
+						<input name="from_email" type="email" value="{{ default_from_email }}">
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="large-1 columns">
+						<label class="right inline">Subject</label>
+					</div>
+					<div class="large-11 columns">
+						<input name="subject" type="text" placeholder="Enter a subject">
+					</div>
+				</div>
+				<div class="row">
+					<div class="large-1 columns">
+						<label class="right inline">Message</label>
+					</div>
+					<div class="large-11 columns">
+						<textarea rows="10" cols="78" name="message" id="message-textarea" placeholder="Enter message text"></textarea>
+					</div>
+				</div>
+
+				<input class="button" type="submit" value="Submit">
+
+			</form>
+
+		</div>
+	</div>
+{% endblock %}
