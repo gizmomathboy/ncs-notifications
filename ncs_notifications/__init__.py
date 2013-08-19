@@ -15,10 +15,33 @@ app.config.from_object('settings.config.Config')
 @app.route('/')
 @requires_auth
 def home():
+
     return render_template('post_form.html',
                            page_title="E-Mail Post Form",
                            default_from_name=app.config["DEFAULT_FROM_NAME"],
                            default_from_email=app.config["DEFAULT_FROM_EMAIL"])
+
+
+
+@app.route('/edit', methods=['POST'])
+@requires_auth
+def edit():
+
+    app.logger.debug(request.form)
+
+    # get form data (WE SHOULD VALIDATE)
+    msg_text = request.form.get('message')
+    subject = request.form.get('subject')
+    from_email = request.form.get('from_email')
+    from_name = request.form.get('from_name')
+
+    return render_template('post_form.html',
+                           page_title="E-Mail Post Form",
+                           default_from_name=from_name,
+                           default_from_email=from_email,
+                           subject=subject,
+                           message=msg_text)
+
 
 
 @app.route('/review', methods=['POST'])
