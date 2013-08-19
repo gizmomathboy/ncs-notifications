@@ -101,7 +101,7 @@ def send():
 
         app.logger.debug("sending to %s" % (email))
 
-        resp = md.messages.send(message)
+        resp = md.messages.send(message, async=True)
 
         app.logger.debug(pformat(resp))
 
