@@ -56,10 +56,20 @@ def review():
     from_email = request.form.get('from_email')
     from_name = request.form.get('from_name')
 
+    app.logger.debug(from_email)
+    app.logger.debug(from_name)
+
+    pm = PostMonkey(app.config['PM_API_KEY'])
+    list_info = pm.lists(filters={'list_id':app.config['PM_LIST_ID']})
+    list_name = list_info['data'][0]['name']
+    list_count = list_info['data'][0]['stats']['member_count']
+
     return render_template('review_form.html',
                            page_title="Review E-mail",
                            from_name=from_name,
                            from_email=from_email,
+                           list_name=list_name,
+                           list_count=list_count,
                            message=message,
                            subject=subject)
 
@@ -71,10 +81,10 @@ def send():
     """
 
     # get form data (WE SHOULD VALIDATE)
-    msg_text = request.form.get('message_confirmed')
-    subject = request.form.get('subject_confirmed')
-    from_email = request.form.get('from_email_confirmed')
-    from_name = request.form.get('from_name_confirmed')
+    msg_text = request.form.get('message')
+    subject = request.form.get('subject')
+    from_email = request.form.get('from_email')
+    from_name = request.form.get('from_name')
 
     pm = PostMonkey(app.config['PM_API_KEY'])
     md = Mandrill(app.config['MD_API_KEY'])
@@ -109,33 +119,3 @@ def send():
 
     return redirect(url_for('home'))
 
-
-@app.route('/sendabunch', methods=['POST'])
-@requires_auth
-def sendabunch():
-    md = Mandrill(app.config['MD_API_KEY'])
-
-    email = request.form['email']
-    count = request.form.get('count', 1)
-    msg_text = "Hello, test user!\n\nThis was sent on %s\n" % datetime.datetime.now()
-
-    for n in range(0, count):
-        message = {
-            "text": msg_text,
-            "subject": "Sendabunch Test Emails",
-            "from_email": app.config['DEFAULT_FROM_EMAIL'],
-            "from_name": app.config['DEFAULT_FROM_NAME'],
-            "to": [{
-                "email": email
-            }]
-        }
-
-        app.logger.debug("sending to %s" % (email))
-
-        resp = md.messages.send(message)
-
-        app.logger.debug(pformat(resp))
-
-    flash("%s e-mails sent!" % count)
-
-    return redirect(url_for('home'))

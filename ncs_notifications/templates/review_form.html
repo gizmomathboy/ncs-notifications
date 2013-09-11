@@ -7,10 +7,10 @@
 				<fieldset>
 					<legend>Message</legend>
 					<div class="row">
-						<div class="large-1 columns">
+						<div class="large-2 columns">
 							<label class="right inline">Name</label>
 						</div>
-						<div class="large-11 columns">
+						<div class="large-10 columns">
 							<p>{{from_name}} &lt;{{from_email}}&gt;</p>
 							<input name="from_name" type="hidden" value="{{ from_name }}">
 							<input name="from_email" type="hidden" value="{{ from_email }}">
@@ -18,21 +18,29 @@
 					</div>
 
 					<div class="row">
-						<div class="large-1 columns">
+						<div class="large-2 columns">
 							<label class="right inline">Subject</label>
 						</div>
-						<div class="large-11 columns">
+						<div class="large-10 columns">
 							<p>{{subject}}</p>
 							<input name="subject" type="hidden" value="{{subject}}">
 						</div>
 					</div>
 					<div class="row">
-						<div class="large-1 columns">
+						<div class="large-2 columns">
 							<label class="right inline">Message</label>
 						</div>
-						<div class="large-11 columns">
-							<pre>{{message}}</pre>
+						<div class="large-10 columns">
+							<p><pre>{{message}}</pre></p>
 							<input type="hidden" value="{{message}}" name="message" id="message-textarea">
+						</div>
+					</div>
+					<div class="row">
+						<div class="large-2 columns">
+							<label class="right inline">List Info</label>
+						</div>
+						<div class="large-10 columns">
+							<p><em>Send to the list <strong>{{list_name}}</strong> with {{list_count}} members</em></p>
 						</div>
 					</div>
 				</fieldset>
@@ -50,10 +58,44 @@
 
 		</div>
 	</div>
+
+	<div id="sending-modal" class="reveal-modal">
+		<h2>Patience!</h2>
+		<p class="lead">This could take a while.</p>
+		<p>We're sending emails right now. Please wait for this to finish before closing the browser or moving to a new page.</p>
+		<div class="row">
+			<div class="large-1 large-centered columns">
+				<div class="radius progress success round"><span class="meter"></span></div>
+			</div>
+		</div>
+		<!-- <a class="close-reveal-modal">&#215;</a> -->
+	</div>
 {% endblock %}
 
 {% block js_footer %}
 	<script>
+
+	function animate_bar() {
+		var width = 20;
+		var max_margin = 100 - width;
+
+		var new_margin;
+		var curr_margin = parseInt($("#sending-modal .meter").css('margin-left'), 10);
+		if (curr_margin >= max_margin) {
+			new_margin = 0;
+		} else {
+			new_margin = curr_margin + width;
+		}
+
+		var css = {
+			'width': width+"%",
+			'margin-left': new_margin+"%"
+		};
+
+		$("#sending-modal .meter").animate(css, 200);
+	}
+
+
 	$(document).ready(function() {
 		// swap action to /edit on click
 		$('#edit-button').on('click', function() {
@@ -63,6 +105,17 @@
 
 			return false;
 		});
+
+		$('#review-form').submit(function() {
+			$('#sending-modal').foundation('reveal', 'open');
+
+			// animate the progress bar
+			setInterval(animate_bar, 200);
+
+			// return false;
+
+		});
+
 	});
 	</script>
 {% endblock %}
