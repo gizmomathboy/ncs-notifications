@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, flash, redirect, url_for
 from postmonkey import PostMonkey
 from mandrill import Mandrill
 from pprint import pformat
+import pytz
 import datetime
 from .basic_auth import requires_auth
 
@@ -95,8 +96,12 @@ def send():
     for mem in members['data']:
         emails.append(mem['email'])
 
-    now = datetime.datetime.now()
-    msg_text = "%s\n\n--------\n\nE-mail generated at %s" % (msg_text, now)
+    now_utc = datetime.datetime.now()         # get naive utc time
+    local_tz = pytz.timezone('US/Eastern')    # set local timezone
+    now_utc = pytz.utc.localize(now_utc)      # add timezone data to utc time
+    local_time = now_utc.astimezone(local_tz) # convert to local time
+    msg_text = "%s\n\n--------\n\nE-mail generated at %s" % (msg_text, local_time)
+    
 
     for email in emails:
         message = {
